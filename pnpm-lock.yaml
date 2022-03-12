@@ -79,6 +79,7 @@ specifiers:
   vue-router: ^4.0.13
   vue-types: ^4.1.1
   windicss: ^3.5.1
+  xterm: ^4.18.0
 
 dependencies:
   '@ctrl/tinycolor': 3.4.0
@@ -107,6 +108,7 @@ dependencies:
   vue-i18n: 9.2.0-beta.30_vue@3.2.31
   vue-router: 4.0.13_vue@3.2.31
   vue-types: 4.1.1_vue@3.2.31
+  xterm: 4.18.0
 
 devDependencies:
   '@iconify-icons/ep': 1.2.1
@@ -4590,6 +4592,10 @@ packages:
       imurmurhash: 0.1.4
       signal-exit: 3.0.7
     dev: true
+
+  /xterm/4.18.0:
+    resolution: {integrity: sha512-JQoc1S0dti6SQfI0bK1AZvGnAxH4MVw45ZPFSO6FHTInAiau3Ix77fSxNx3mX4eh9OL4AYa8+4C8f5UvnSfppQ==}
+    dev: false
 
   /y18n/5.0.8:
     resolution: {integrity: sha512-0pfFzegeDWJHJIAmTLRP2DwHjdF5s7jo9tuztdQxAhINCdvS+3nGINqPd00AphqJR/0LhANUS6/+7SCb98YOfA==}

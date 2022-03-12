@@ -18,5 +18,8 @@ export default {
   permission: "Permission Manage",
   permissionPage: "Page Permission",
   permissionButton: "Button Permission",
-  externalLink: "External Link"
+  externalLink: "External Link",
+  resourcePage: "Page Resource",
+  resourceHost: "host",
+  resourceTerminal: "web terminal"
 };

@@ -18,5 +18,8 @@ export default {
   permission: "权限管理",
   permissionPage: "页面权限",
   permissionButton: "按钮权限",
-  externalLink: "外链"
+  externalLink: "外链",
+  resourcePage: "资源管理",
+  resourceHost: "主机管理",
+  resourceTerminal: "WEB终端"
 };
