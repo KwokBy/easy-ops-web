@@ -36,6 +36,7 @@ specifiers:
   eslint: ^8.8.0
   eslint-plugin-prettier: ^4.0.0
   eslint-plugin-vue: ^8.4.1
+  js-base64: ^3.7.2
   js-cookie: ^3.0.1
   lodash-es: ^4.17.21
   lodash-unified: ^1.0.2
@@ -80,6 +81,7 @@ specifiers:
   vue-types: ^4.1.1
   windicss: ^3.5.1
   xterm: ^4.18.0
+  xterm-addon-fit: ^0.5.0
 
 dependencies:
   '@ctrl/tinycolor': 3.4.0
@@ -92,6 +94,7 @@ dependencies:
   dayjs: 1.10.7
   element-plus: 2.0.3_1a412d14def5ff5ca1122000e4bee666
   element-resize-detector: 1.2.4
+  js-base64: 3.7.2
   js-cookie: 3.0.1
   lodash-es: 4.17.21
   lodash-unified: 1.0.2_f567d1d3c0c6a67669f03af7a1aa4dad
@@ -109,6 +112,7 @@ dependencies:
   vue-router: 4.0.13_vue@3.2.31
   vue-types: 4.1.1_vue@3.2.31
   xterm: 4.18.0
+  xterm-addon-fit: 0.5.0_xterm@4.18.0
 
 devDependencies:
   '@iconify-icons/ep': 1.2.1
@@ -2738,6 +2742,10 @@ packages:
     hasBin: true
     dev: true
 
+  /js-base64/3.7.2:
+    resolution: {integrity: sha512-NnRs6dsyqUXejqk/yv2aiXlAvOs56sLkX6nUdeaNezI5LFFLlsZjOThmwnrcwh5ZZRwZlCMnVAY3CvhIhoVEKQ==}
+    dev: false
+
   /js-cookie/3.0.1:
     resolution: {integrity: sha512-+0rgsUXZu4ncpPxRL+lNEptWMOWl9etvPHc/koSRp6MPwpRYAhmk0dUG00J4bxVV3r9uUzfo24wW0knS07SKSw==}
     engines: {node: '>=12'}
@@ -4592,6 +4600,14 @@ packages:
       imurmurhash: 0.1.4
       signal-exit: 3.0.7
     dev: true
+
+  /xterm-addon-fit/0.5.0_xterm@4.18.0:
+    resolution: {integrity: sha512-DsS9fqhXHacEmsPxBJZvfj2la30Iz9xk+UKjhQgnYNkrUIN5CYLbw7WEfz117c7+S86S/tpHPfvNxJsF5/G8wQ==}
+    peerDependencies:
+      xterm: ^4.0.0
+    dependencies:
+      xterm: 4.18.0
+    dev: false
 
   /xterm/4.18.0:
     resolution: {integrity: sha512-JQoc1S0dti6SQfI0bK1AZvGnAxH4MVw45ZPFSO6FHTInAiau3Ix77fSxNx3mX4eh9OL4AYa8+4C8f5UvnSfppQ==}
