@@ -1,6 +1,14 @@
 <template>
   <el-card>
-    <HostDialog />
+    <el-button type="primary" :icon="Plus" @click="dialogVisible = true"
+      >新建
+    </el-button>
+    <HostDialog :visible="dialogVisible" @resetVisible="resetVisible()" />
+    <HostDialog
+      :visible="editVisible"
+      @resetVisible="resetVisible()"
+      :editData="editData"
+    />
     <el-table
       :data="tableData"
       style="width: 100%"
@@ -44,19 +52,27 @@ export default {
 import { onBeforeMount, ref } from "vue";
 import { ElButton, ElTable, ElTableColumn, ElCard } from "element-plus";
 import HostDialog from "/@/views/resource/dialog/hostDialog.vue";
-import { getHosts } from "/@/api/host";
+import { delHost, getHosts } from "/@/api/host";
+import { Plus } from "@element-plus/icons-vue";
 interface Host {
   id: number;
   host: string;
   host_name: string;
-  username: string;
+  user: string;
   name: string;
+  owner: string;
+  password: string;
+  desc: string;
+  port: number;
+  updated_time: string;
 }
 interface Table {
   label: string;
   prop: string;
   align: string;
 }
+const dialogVisible = ref(false);
+const editVisible = ref(false);
 const tableRef = ref();
 const tableDataLabel: Table[] = [
   {
@@ -66,7 +82,12 @@ const tableDataLabel: Table[] = [
   },
   {
     label: "IP地址",
-    prop: "host",
+    prop: "host_name",
+    align: "center"
+  },
+  {
+    label: "描述",
+    prop: "desc",
     align: "center"
   },
   {
@@ -80,18 +101,19 @@ const tableDataLabel: Table[] = [
     align: "center"
   }
 ];
-// const search = ref("");
-// const filterTableData = computed(() =>
-//   tableData.filter(
-//     data =>
-//       !search.value ||
-//       data.name.toLowerCase().includes(search.value.toLowerCase())
-//   )
-// );
+
+let editData = ref<Host>({} as Host);
+
 const handleEdit = (index: number, row: Host) => {
-  console.log(index, row);
+  editData.value = row;
+  editVisible.value = true;
 };
 const handleDelete = (index: number, row: Host) => {
+  delHost({
+    id: row.id
+  }).then((res: response) => {
+    console.log(res);
+  });
   console.log(index, row);
 };
 
@@ -101,12 +123,22 @@ interface response {
   data: Host[];
   msg: string;
 }
+
 onBeforeMount(() => {
   getHosts({
     owner: "doubleguo"
   }).then((res: response) => {
     tableData.value = res.data;
-    console.log(tableData);
   });
 });
+
+const resetVisible = () => {
+  dialogVisible.value = false;
+  editVisible.value = false;
+  getHosts({
+    owner: "doubleguo"
+  }).then((res: response) => {
+    tableData.value = res.data;
+  });
+};
 </script>

@@ -47,34 +47,59 @@ export default {
 </script>
 
 <script lang="ts" setup>
-import { reactive, ref } from "vue";
+import { reactive, ref, watchEffect } from "vue";
 import { ElForm, ElFormItem, ElButton, ElInput } from "element-plus";
-import { addHost } from "../../../api/host";
-
+import { addHost, updateHost } from "../../../api/host";
 type FormInstance = InstanceType<typeof ElForm>;
 const hostFormRef = ref<FormInstance>();
-const hostForm = reactive({
-  name: "",
-  user: "",
-  host_name: "",
-  port: 22,
-  password: "",
-  desc: ""
-});
-
+interface Host {
+  id: number;
+  host: string;
+  host_name: string;
+  password: string;
+  desc: string;
+  user: string;
+  name: string;
+  owner: string;
+  port: number;
+  updated_time: string;
+}
+// let hostForm = ref<Host>({} as Host);
+let hostForm = reactive<Host>({} as Host);
 const rules = reactive({
   name: [
     { required: true, message: "Please input Activity name", trigger: "blur" }
   ]
 });
 
+const props = defineProps({
+  formData: {
+    type: Object as () => Host,
+    default: () => ({} as Host)
+  }
+});
+const emitsDialog = defineEmits<{
+  (e: "close"): void;
+}>();
 const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   await formEl.validate((valid, fields) => {
     if (valid) {
-      addHost(hostForm).then(res => {
-        console.log(res);
-      });
+      // 更新存在id
+      if (hostForm.id > 0) {
+        console.log(hostForm);
+        updateHost(hostForm).then(res => {
+          emitsDialog("close");
+          hostForm = {} as Host;
+        });
+        // 新增无id
+      } else {
+        console.log(hostForm);
+        addHost(hostForm).then(res => {
+          emitsDialog("close");
+          hostForm = {} as Host;
+        });
+      }
     } else {
       console.log("error submit!", fields);
     }
@@ -85,4 +110,9 @@ const resetForm = (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   formEl.resetFields();
 };
+
+// 监听父组件的visible属性
+watchEffect(() => {
+  hostForm = props.formData;
+});
 </script>

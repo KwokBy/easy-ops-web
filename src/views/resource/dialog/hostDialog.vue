@@ -1,17 +1,12 @@
 <template>
-  <el-button type="primary" :icon="Plus" @click="dialogVisible = true"
-    >新建
-  </el-button>
-  <el-dialog v-model="dialogVisible" title="Tips" width="50%" draggable>
-    <HostForm />
-    <!-- <template #footer>
-      <span class="dialog-footer">
-        <el-button @click="dialogVisible = false">Cancel</el-button>
-        <el-button type="primary" @click="dialogVisible = false"
-          >Confirm</el-button
-        >
-      </span>
-    </template> -->
+  <el-dialog
+    v-model="dialogVisible"
+    title="Tips"
+    width="50%"
+    draggable
+    @close="emit('resetVisible')"
+  >
+    <HostForm @close="close()" :formData="formData" />
   </el-dialog>
 </template>
 
@@ -21,9 +16,49 @@ export default {
 };
 </script>
 <script lang="ts" setup>
-import { ref } from "vue";
+import { ref, watchEffect } from "vue";
 import { ElDialog } from "element-plus";
-import { Plus } from "@element-plus/icons-vue";
 import HostForm from "/@/views/resource/form/hostForm.vue";
+
+interface Host {
+  id: number;
+  host: string;
+  host_name: string;
+  user: string;
+  name: string;
+  owner: string;
+  password: string;
+  desc: string;
+  port: number;
+  updated_time: string;
+}
+
+const props = defineProps({
+  visible: {
+    type: Boolean,
+    default: false
+  },
+  editData: {
+    type: Object as () => Host,
+    default: () => ({})
+  }
+});
+
 const dialogVisible = ref(false);
+
+let formData = ref<Host>({} as Host);
+const emit = defineEmits(["resetVisible"]);
+
+const close = () => {
+  dialogVisible.value = false;
+  formData.value = {} as Host;
+  emit("resetVisible");
+};
+
+// 监听父组件的visible属性
+watchEffect(() => {
+  dialogVisible.value = props.visible;
+  // 深拷贝防止修改原来值
+  formData.value = JSON.parse(JSON.stringify(props.editData));
+});
 </script>
