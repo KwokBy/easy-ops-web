@@ -108,11 +108,11 @@ function resetRouter(): void {
 // 初始化路由
 function initRouter(name: string) {
   return new Promise(resolve => {
-    getAsyncRoutes({ name }).then(({ result }) => {
-      if (result.length === 0) {
-        usePermissionStoreHook().changeSetting(result);
+    getAsyncRoutes({ name }).then(({ data }) => {
+      if (data.length === 0) {
+        usePermissionStoreHook().changeSetting(data);
       } else {
-        formatFlatteningRoutes(addAsyncRoutes(result)).map(
+        formatFlatteningRoutes(addAsyncRoutes(data)).map(
           (v: RouteRecordRaw) => {
             // 防止重复添加路由
             if (
@@ -135,7 +135,7 @@ function initRouter(name: string) {
             resolve(router);
           }
         );
-        usePermissionStoreHook().changeSetting(result);
+        usePermissionStoreHook().changeSetting(data);
       }
       router.addRoute({
         path: "/:pathMatch(.*)",

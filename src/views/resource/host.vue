@@ -2,10 +2,11 @@
   <el-card>
     <HostDialog />
     <el-table
-      :data="filterTableData"
+      :data="tableData"
       style="width: 100%"
       border
       :header-cell-style="{ background: '#FAFAFA' }"
+      :ref="tableRef"
     >
       <el-table-column
         v-for="(item, index) in tableDataLabel"
@@ -40,9 +41,10 @@ export default {
 };
 </script>
 <script lang="ts" setup>
-import { ref, computed } from "vue";
+import { onBeforeMount, ref } from "vue";
 import { ElButton, ElTable, ElTableColumn, ElCard } from "element-plus";
 import HostDialog from "/@/views/resource/dialog/hostDialog.vue";
+import { getHosts } from "/@/api/host";
 interface Host {
   id: number;
   host: string;
@@ -55,10 +57,11 @@ interface Table {
   prop: string;
   align: string;
 }
+const tableRef = ref();
 const tableDataLabel: Table[] = [
   {
     label: "主机名称",
-    prop: "host_name",
+    prop: "name",
     align: "center"
   },
   {
@@ -77,14 +80,14 @@ const tableDataLabel: Table[] = [
     align: "center"
   }
 ];
-const search = ref("");
-const filterTableData = computed(() =>
-  tableData.filter(
-    data =>
-      !search.value ||
-      data.name.toLowerCase().includes(search.value.toLowerCase())
-  )
-);
+// const search = ref("");
+// const filterTableData = computed(() =>
+//   tableData.filter(
+//     data =>
+//       !search.value ||
+//       data.name.toLowerCase().includes(search.value.toLowerCase())
+//   )
+// );
 const handleEdit = (index: number, row: Host) => {
   console.log(index, row);
 };
@@ -92,5 +95,18 @@ const handleDelete = (index: number, row: Host) => {
   console.log(index, row);
 };
 
-const tableData: Host[] = [];
+let tableData = ref<Host[]>([]);
+interface response {
+  code: number;
+  data: Host[];
+  msg: string;
+}
+onBeforeMount(() => {
+  getHosts({
+    owner: "doubleguo"
+  }).then((res: response) => {
+    tableData.value = res.data;
+    console.log(tableData);
+  });
+});
 </script>
