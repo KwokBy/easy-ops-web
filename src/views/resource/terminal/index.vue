@@ -1,100 +1,85 @@
 <template>
-  <div ref="terminal" id="terminal"></div>
+  <el-card>
+    <el-col
+      :span="8"
+      v-for="host in hosts"
+      :key="host.id"
+      @click="toDetail(host.id)"
+      style="margin: 10px"
+    >
+      <el-card shadow="always"> {{ host.name }} </el-card>
+    </el-col>
+  </el-card>
 </template>
 
-<script lang="ts">
-import { defineComponent, onMounted, ref, onUnmounted } from "vue";
-import { Terminal } from "xterm";
-import { FitAddon } from "xterm-addon-fit";
-import "xterm/css/xterm.css";
-import { ElMessage } from "element-plus";
-import { Base64 } from "js-base64";
+<script setup lang="ts">
+import { useRouter, useRoute } from "vue-router";
+import { useMultiTagsStoreHook } from "/@/store/modules/multiTags";
+import { ElCard, ElCol } from "element-plus";
+import { onBeforeMount, ref } from "vue";
+import { getHosts } from "/@/api/host";
+const router = useRouter();
+const route = useRoute();
 
-export default defineComponent({
-  name: "Xterm",
-  setup() {
-    //实例化路由
-    const shellWs = ref(null);
-    const rows = ref(null);
-    const cols = ref(null);
-
-    const term = new Terminal({
-      rendererType: "canvas",
-      cursorBlink: true,
-      convertEol: true,
-      scrollback: 800,
-      // row: 70,
-      theme: {
-        foreground: "white",
-        background: "#181E29"
-      }
-    });
-    const fitAddon = new FitAddon();
-    // canvas背景全屏
-    term.loadAddon(fitAddon);
-    fitAddon.fit();
-    const ws = new WebSocket("ws://localhost:8080/api/v1/ws/ssh");
-    onMounted(() => {
-      term.open(document.getElementById("terminal")); //绑定dom节点
-      term.focus(); // 取得输入焦点
-      term.writeln("Connecting..."); // 写一行测试
-      ws.onclose = function () {
-        ElMessage.warning({
-          message: "链接已关闭",
-          type: "warning",
-          center: true
-        });
-      };
-      ws.onmessage = function (e) {
-        // 服务端ssh输出, 写到web shell展示
-        term.write(e.data);
-      };
-      ws.onerror = function () {
-        ElMessage.error({
-          message: "请更换，shell环境再试一下",
-          type: "error",
-          center: true
-        });
-      };
-      // 当浏览器窗口变化时, 重新适配终端
-      window.addEventListener("resize", function () {
-        fitAddon.fit();
-        // 把web终端的尺寸term.rows和term.cols发给服务端, 通知sshd调整输出宽度
-        var msg = { type: 2, rows: term.rows, cols: term.cols };
-        ws.send(JSON.stringify(msg));
-      });
-      // ws.send(
-      //   JSON.stringify({
-      //     type: 2,
-      //     cmd: "ls"
-      //   })
-      // );
-      // 当向web终端敲入字符时候的回调
-      term.onKey(e => {
-        //给后端发送数据
-        // 写给服务端, 由服务端发给container
-        console.log(e.key);
-        var msg = { type: 1, cmd: Base64.encode(e.key) };
-        ws.send(JSON.stringify(msg));
-      });
-      // 支持输入与粘贴方法
-      term.onData(function (input) {
-        // 写给服务端, 由服务端发给container
-        var msg = { type: 1, cmd: input };
-        ws.send(JSON.stringify(msg));
-      });
-    });
-    onUnmounted(() => {
-      ws.close();
-    });
-    return {
-      shellWs,
-      term,
-      rows,
-      cols
-    };
-  }
+function toDetail(index: number) {
+  useMultiTagsStoreHook().handleTags("push", {
+    path: `/tabs/detail`,
+    parentPath: route.matched[0].path,
+    name: "tabDetail",
+    query: { id: String(index) },
+    meta: {
+      title: { zh: `No.${index} - 详情信息`, en: `No.${index} - DetailInfo` },
+      showLink: false,
+      i18n: false,
+      dynamicLevel: 3
+    }
+  });
+  router.push({ name: "tabDetail", query: { id: String(index) } });
+}
+interface Host {
+  id: number;
+  host: string;
+  host_name: string;
+  user: string;
+  name: string;
+  owner: string;
+  password: string;
+  desc: string;
+  port: number;
+  updated_time: string;
+}
+let hosts = ref<Host[]>([]);
+interface response {
+  code: number;
+  data: Host[];
+  msg: string;
+}
+onBeforeMount(() => {
+  getHosts({
+    owner: "doubleguo"
+  }).then((res: response) => {
+    hosts.value = res.data;
+  });
 });
 </script>
 
-<style></style>
+<style>
+.infinite-list {
+  height: 500px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+.infinite-list .infinite-list-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 50px;
+  background: var(--el-color-primary-light-9);
+  margin: 10px;
+  color: var(--el-color-primary);
+}
+.infinite-list .infinite-list-item + .list-item {
+  margin-top: 10px;
+}
+</style>
