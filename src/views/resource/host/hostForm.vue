@@ -49,7 +49,7 @@ export default {
 <script lang="ts" setup>
 import { reactive, ref, watchEffect } from "vue";
 import { ElForm, ElFormItem, ElButton, ElInput } from "element-plus";
-import { addHost, updateHost } from "../../../api/host";
+import { addHost, updateHost } from "/@/api/host";
 type FormInstance = InstanceType<typeof ElForm>;
 const hostFormRef = ref<FormInstance>();
 interface Host {

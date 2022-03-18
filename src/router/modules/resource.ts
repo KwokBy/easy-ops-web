@@ -16,7 +16,7 @@ const resourceRouter = {
     {
       path: "/resource/host",
       name: "host",
-      component: () => import("/@/views/resource/host.vue"),
+      component: () => import("/@/views/resource/host/index.vue"),
       meta: {
         title: $t("menus.resourceHost"),
         i18n: true
@@ -25,7 +25,7 @@ const resourceRouter = {
     {
       path: "/resource/terminal",
       name: "terminal",
-      component: () => import("/@/views/resource/terminal.vue"),
+      component: () => import("/@/views/resource/terminal/index.vue"),
       meta: {
         title: $t("menus.resourceTerminal"),
         i18n: true

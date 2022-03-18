@@ -79,7 +79,7 @@ import {
   ElCard,
   ElMessage
 } from "element-plus";
-import HostDialog from "/@/views/resource/dialog/hostDialog.vue";
+import HostDialog from "/@/views/resource/host/hostDialog.vue";
 import { delHost, getHosts, verifyHost } from "/@/api/host";
 import { Plus } from "@element-plus/icons-vue";
 interface Host {

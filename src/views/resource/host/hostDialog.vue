@@ -18,7 +18,7 @@ export default {
 <script lang="ts" setup>
 import { ref, watchEffect } from "vue";
 import { ElDialog } from "element-plus";
-import HostForm from "/@/views/resource/form/hostForm.vue";
+import HostForm from "/@/views/resource/host/hostForm.vue";
 
 interface Host {
   id: number;
