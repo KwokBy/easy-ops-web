@@ -1,15 +1,17 @@
 <template>
-  <el-card>
-    <el-col
-      :span="8"
-      v-for="host in hosts"
-      :key="host.id"
-      @click="toDetail(host.id)"
-      style="margin: 10px"
-    >
-      <el-card shadow="always"> {{ host.name }} </el-card>
-    </el-col>
-  </el-card>
+  <div>
+    <el-card>
+      <el-col
+        :span="8"
+        v-for="host in hosts"
+        :key="host.id"
+        @click="toDetail(host.id, host.name)"
+        style="margin: 10px"
+      >
+        <el-card shadow="always"> {{ host.name }} </el-card>
+      </el-col>
+    </el-card>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -20,21 +22,21 @@ import { onBeforeMount, ref } from "vue";
 import { getHosts } from "/@/api/host";
 const router = useRouter();
 const route = useRoute();
-
-function toDetail(index: number) {
+function toDetail(index: number, name: string) {
   useMultiTagsStoreHook().handleTags("push", {
-    path: `/tabs/detail`,
+    path: `/resource/terminal/detail`,
     parentPath: route.matched[0].path,
-    name: "tabDetail",
-    query: { id: String(index) },
+    name: "detail",
+    query: { id: index },
     meta: {
-      title: { zh: `No.${index} - 详情信息`, en: `No.${index} - DetailInfo` },
+      title: { zh: name, en: name },
       showLink: false,
       i18n: false,
-      dynamicLevel: 3
+      dynamicLevel: 3,
+      keepAlive: true
     }
   });
-  router.push({ name: "tabDetail", query: { id: String(index) } });
+  router.push({ name: "detail", query: { id: String(index) } });
 }
 interface Host {
   id: number;
@@ -64,22 +66,15 @@ onBeforeMount(() => {
 </script>
 
 <style>
-.infinite-list {
-  height: 500px;
-  padding: 0;
-  margin: 0;
-  list-style: none;
+.demo-tabs > .el-tabs__content {
+  padding: 32px;
+  color: #6b778c;
+  font-size: 32px;
+  font-weight: 600;
 }
-.infinite-list .infinite-list-item {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 50px;
-  background: var(--el-color-primary-light-9);
-  margin: 10px;
-  color: var(--el-color-primary);
-}
-.infinite-list .infinite-list-item + .list-item {
-  margin-top: 10px;
+
+.el-tabs--right .el-tabs__content,
+.el-tabs--left .el-tabs__content {
+  height: 100%;
 }
 </style>

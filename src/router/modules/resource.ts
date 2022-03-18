@@ -10,7 +10,8 @@ const resourceRouter = {
     icon: "position",
     title: $t("menus.resourcePage"),
     i18n: true,
-    rank: 9
+    rank: 9,
+    keepAlive: true
   },
   children: [
     {
@@ -29,6 +30,19 @@ const resourceRouter = {
       meta: {
         title: $t("menus.resourceTerminal"),
         i18n: true
+      }
+    },
+    {
+      path: "/resource/terminal/detail",
+      name: "detail",
+      component: () => import("/@/views/resource/terminal/terminal.vue"),
+      meta: {
+        title: "",
+        showLink: false,
+        i18n: false,
+        dynamicLevel: 3,
+        refreshRedirect: "/resource/terminal",
+        keepAlive: true
       }
     }
   ]

@@ -1,6 +1,10 @@
 <template>
   <el-config-provider :locale="currentLocale">
-    <router-view />
+    <router-view v-slot="{ Component }">
+      <keep-alive include="Terminal">
+        <component :is="Component" />
+      </keep-alive>
+    </router-view>
   </el-config-provider>
 </template>
 
