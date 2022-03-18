@@ -28,6 +28,12 @@
           <el-button
             size="small"
             type="text"
+            @click="handleCheck(scope.$index, scope.row)"
+            >验证</el-button
+          >
+          <el-button
+            size="small"
+            type="text"
             @click="handleEdit(scope.$index, scope.row)"
             >Edit</el-button
           >
@@ -50,9 +56,15 @@ export default {
 </script>
 <script lang="ts" setup>
 import { onBeforeMount, ref } from "vue";
-import { ElButton, ElTable, ElTableColumn, ElCard } from "element-plus";
+import {
+  ElButton,
+  ElTable,
+  ElTableColumn,
+  ElCard,
+  ElMessage
+} from "element-plus";
 import HostDialog from "/@/views/resource/dialog/hostDialog.vue";
-import { delHost, getHosts } from "/@/api/host";
+import { delHost, getHosts, verifyHost } from "/@/api/host";
 import { Plus } from "@element-plus/icons-vue";
 interface Host {
   id: number;
@@ -110,11 +122,29 @@ const handleEdit = (index: number, row: Host) => {
 };
 const handleDelete = (index: number, row: Host) => {
   delHost({
-    id: row.id
+    host_id: row.id
   }).then((res: response) => {
     console.log(res);
   });
-  console.log(index, row);
+};
+
+const handleCheck = (index: number, row: Host) => {
+  verifyHost(row).then((res: response) => {
+    console.log(res);
+    if (res.code === 0) {
+      ElMessage.success({
+        message: "验证成功",
+        type: "success",
+        center: true
+      });
+    } else {
+      ElMessage.error({
+        message: "验证失败",
+        type: "error",
+        center: true
+      });
+    }
+  });
 };
 
 let tableData = ref<Host[]>([]);

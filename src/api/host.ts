@@ -21,3 +21,8 @@ export const delHost = (data: object) => {
 export const updateHost = (data: object) => {
   return http.request("post", BaseURL + "/update", { data });
 };
+
+// 验证主机
+export const verifyHost = (data: object) => {
+  return http.request("post", BaseURL + "/verify", { data });
+};
