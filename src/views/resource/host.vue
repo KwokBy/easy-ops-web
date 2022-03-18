@@ -23,6 +23,22 @@
         :prop="item.prop"
         :align="item.align"
       />
+      <el-table-column
+        header-align="center"
+        align="center"
+        prop="status"
+        label="状态"
+      >
+        <template v-slot="scope">
+          <el-tag
+            :type="tagMap[scope.row.status]"
+            :key="scope.row.id"
+            :style="{ marginRight: '10px' }"
+          >
+            {{ statusMap[scope.row.status] }}
+          </el-tag>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" align="center">
         <template #default="scope">
           <el-button
@@ -35,13 +51,13 @@
             size="small"
             type="text"
             @click="handleEdit(scope.$index, scope.row)"
-            >Edit</el-button
+            >编辑</el-button
           >
           <el-button
             size="small"
             type="text"
             @click="handleDelete(scope.$index, scope.row)"
-            >Delete</el-button
+            >删除</el-button
           >
         </template>
       </el-table-column>
@@ -83,6 +99,14 @@ interface Table {
   prop: string;
   align: string;
 }
+const statusMap = {
+  0: "未验证",
+  1: "已验证"
+};
+const tagMap = {
+  0: "danger",
+  1: "success"
+};
 const dialogVisible = ref(false);
 const editVisible = ref(false);
 const tableRef = ref();
@@ -106,11 +130,6 @@ const tableDataLabel: Table[] = [
     label: "配置信息",
     prop: "info",
     align: "center"
-  },
-  {
-    label: "状态",
-    prop: "status",
-    align: "center"
   }
 ];
 
@@ -124,13 +143,24 @@ const handleDelete = (index: number, row: Host) => {
   delHost({
     host_id: row.id
   }).then((res: response) => {
-    console.log(res);
+    if (res.code === 0) {
+      ElMessage.success({
+        message: "删除成功",
+        type: "success",
+        center: true
+      });
+    } else {
+      ElMessage.error({
+        message: "删除失败",
+        type: "error",
+        center: true
+      });
+    }
   });
 };
 
 const handleCheck = (index: number, row: Host) => {
   verifyHost(row).then((res: response) => {
-    console.log(res);
     if (res.code === 0) {
       ElMessage.success({
         message: "验证成功",
