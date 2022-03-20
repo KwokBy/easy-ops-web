@@ -90,7 +90,7 @@ onDeactivated(() => {
 
 <script lang="ts">
 export default {
-  name: "Terminal"
+  name: "detail"
 };
 </script>
 
