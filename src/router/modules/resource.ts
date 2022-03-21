@@ -10,8 +10,7 @@ const resourceRouter = {
     icon: "position",
     title: $t("menus.resourcePage"),
     i18n: true,
-    rank: 9,
-    keepAlive: true
+    rank: 9
   },
   children: [
     {

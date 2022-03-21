@@ -21,5 +21,7 @@ export default {
   externalLink: "外链",
   resourcePage: "资源管理",
   resourceHost: "主机管理",
-  resourceTerminal: "WEB终端"
+  resourceTerminal: "WEB终端",
+  taskPage: "任务管理",
+  taskSchedule: "任务调度"
 };

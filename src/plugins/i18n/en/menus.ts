@@ -21,5 +21,7 @@ export default {
   externalLink: "External Link",
   resourcePage: "Page Resource",
   resourceHost: "host",
-  resourceTerminal: "web terminal"
+  resourceTerminal: "web terminal",
+  taskPage: "task",
+  taskSchedule: "Task Schedule"
 };
