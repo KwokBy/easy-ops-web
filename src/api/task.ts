@@ -13,7 +13,12 @@ export const addTask = (data: object) => {
 };
 
 // 执行任务
-export const execTask = (data: object) => {
+export const execTest = (data: object) => {
+  return http.request("post", BaseURL + "/test", { data });
+};
+
+// 激活任务
+export const activeTask = (data: object) => {
   return http.request("post", BaseURL + "/exec", { data });
 };
 

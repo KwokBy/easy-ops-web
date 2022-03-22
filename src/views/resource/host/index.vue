@@ -195,10 +195,12 @@ onBeforeMount(() => {
 const resetVisible = () => {
   dialogVisible.value = false;
   editVisible.value = false;
+  editData.value = {} as Host;
   getHosts({
     owner: "doubleguo"
   }).then((res: response) => {
     tableData.value = res.data;
+    tableData.value.splice(1, 0);
   });
 };
 </script>

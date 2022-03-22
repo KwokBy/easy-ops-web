@@ -15,6 +15,11 @@
       </el-col>
     </el-row>
     <Dialog :visible="dialogVisible" @resetVisible="resetVisible()"></Dialog>
+    <Dialog
+      :visible="editVisible"
+      @resetVisible="resetVisible()"
+      :editData="editData"
+    ></Dialog>
     <el-table
       :data="tableData"
       style="width: 100%"
@@ -59,6 +64,24 @@
             @click="handleDelete(scope.$index, scope.row)"
             >删除</el-button
           >
+          <el-button
+            size="small"
+            type="text"
+            @click="handleExec(scope.$index, scope.row)"
+            >执行一次测试</el-button
+          >
+          <el-button
+            size="small"
+            type="text"
+            @click="handleActive(scope.$index, scope.row)"
+            >激活</el-button
+          >
+          <el-button
+            size="small"
+            type="text"
+            @click="handleStop(scope.$index, scope.row)"
+            >禁用</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
@@ -82,19 +105,9 @@ import {
 } from "element-plus";
 import Dialog from "/@/views/task/schedule/dialog.vue";
 import { Plus } from "@element-plus/icons-vue";
-import { getTasks } from "../../../api/task";
-interface Host {
-  id: number;
-  host: string;
-  host_name: string;
-  user: string;
-  name: string;
-  owner: string;
-  password: string;
-  desc: string;
-  port: number;
-  updated_time: string;
-}
+import { activeTask, execTest, getTasks, stopTask } from "../../../api/task";
+import { Schedule } from "./types";
+
 interface Table {
   label: string;
   prop: string;
@@ -137,18 +150,18 @@ const tableDataLabel: Table[] = [
   }
 ];
 
-let editData = ref<Host>({} as Host);
+let editData = ref<Schedule>({} as Schedule);
 
-const handleEdit = (index: number, row: Host) => {
+const handleEdit = (index: number, row: Schedule) => {
   editData.value = row;
   editVisible.value = true;
 };
-const handleDelete = (index: number, row: Host) => {};
+const handleDelete = (index: number, row: Schedule) => {};
 
-let tableData = ref<Host[]>([]);
+let tableData = ref<Schedule[]>([]);
 interface response {
   code: number;
-  data: Host[];
+  data: Schedule[];
   msg: string;
 }
 
@@ -164,6 +177,24 @@ const resetVisible = () => {
   dialogVisible.value = false;
   editVisible.value = false;
 };
-
+const handleExec = (index: number, row: Schedule) => {
+  execTest(row).then((res: response) => {});
+};
+const handleActive = (index: number, row: Schedule) => {
+  activeTask(row).then((res: response) => {
+    if (res.code === 0) {
+      tableData.value[index].status = 1;
+    }
+  });
+};
+const handleStop = (index: number, row: Schedule) => {
+  stopTask({
+    task_id: row.id
+  }).then((res: response) => {
+    if (res.code === 0) {
+      tableData.value[index].status = 0;
+    }
+  });
+};
 const radio1 = ref("全部");
 </script>

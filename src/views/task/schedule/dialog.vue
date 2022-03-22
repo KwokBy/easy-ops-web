@@ -33,9 +33,14 @@
             v-model="scheduleForm.host_ids"
             placeholder="Activity zone"
             multiple
+            value-key="id"
           >
-            <el-option label="Zone one" value="1" />
-            <el-option label="Zone two" value="2" />
+            <el-option
+              v-for="host in hosts"
+              :key="host.id"
+              :label="host.name"
+              :value="host.id"
+            />
           </el-select>
         </el-form-item>
         <el-form-item label="执行规则" v-show="active === 2">
@@ -73,7 +78,7 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, watchEffect } from "vue";
+import { onBeforeMount, reactive, ref, watchEffect } from "vue";
 import { Schedule } from "./types";
 import {
   ElSteps,
@@ -87,6 +92,8 @@ import {
   ElOption,
   ElDatePicker
 } from "element-plus";
+import { addTask } from "/@/api/task";
+import { getHosts } from "/@/api/host";
 const active = ref(0);
 
 const next = () => {
@@ -102,26 +109,18 @@ const props = defineProps({
     default: false
   },
   editData: {
-    type: Object,
+    type: Object as () => Schedule,
     default: () => ({})
   }
 });
 
 const dialogVisible = ref(false);
 
-let formData = ref(null);
 const emit = defineEmits(["resetVisible"]);
-
-// 监听父组件的visible属性
-watchEffect(() => {
-  dialogVisible.value = props.visible;
-  // 深拷贝防止修改原来值
-  formData.value = JSON.parse(JSON.stringify(props.editData));
-});
 
 type FormInstance = InstanceType<typeof ElForm>;
 const scheduleFormRef = ref<FormInstance>();
-const scheduleForm = reactive<Schedule>({} as Schedule);
+const scheduleForm = ref<Schedule>({} as Schedule);
 
 const rules = reactive({
   name: [
@@ -133,7 +132,11 @@ const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   await formEl.validate((valid, fields) => {
     if (valid) {
-      console.log("submit!");
+      const data = reactive({ ...scheduleForm.value });
+      console.log(scheduleForm.value);
+      addTask(data).then(res => {
+        emit("resetVisible");
+      });
     } else {
       console.log("error submit!", fields);
     }
@@ -144,6 +147,40 @@ const resetForm = (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   formEl.resetFields();
 };
+
+interface Host {
+  id: number;
+  host: string;
+  host_name: string;
+  user: string;
+  name: string;
+  owner: string;
+  password: string;
+  desc: string;
+  port: number;
+  updated_time: string;
+}
+interface response {
+  code: number;
+  data: Host[];
+  msg: string;
+}
+let hosts = ref<Host[]>([]);
+onBeforeMount(() => {
+  getHosts({
+    owner: "doubleguo"
+  }).then((res: response) => {
+    hosts.value = res.data;
+  });
+});
+
+// 监听父组件的visible属性
+watchEffect(() => {
+  dialogVisible.value = props.visible;
+  // 深拷贝防止修改原来值
+  scheduleForm.value = JSON.parse(JSON.stringify(props.editData));
+  console.log(scheduleForm.value);
+});
 </script>
 
 <script lang="ts">
