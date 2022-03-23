@@ -1,3 +1,4 @@
+import { getExecHistoryInfos } from "/@/api/exec_history_info";
 <template>
   <div>
     <el-dialog
@@ -78,11 +79,20 @@ import {
   ElDescriptionsItem
 } from "element-plus";
 import { HistoryInfo, ExecHistory } from "./types";
+import { getExecHistoryInfos } from "/@/api/exec_history_info";
 
 const props = defineProps({
   visible: {
     type: Boolean,
     default: false
+  },
+  task_id: {
+    type: Number,
+    default: 0
+  },
+  exec_id: {
+    type: Number,
+    default: 0
   }
 });
 const colorMap = {
@@ -94,60 +104,21 @@ const dialogVisible = ref(false);
 const emit = defineEmits(["resetVisible"]);
 const historyInfo = ref<HistoryInfo>();
 const execHistories = ref<ExecHistory[]>([]);
-onBeforeMount(() => {
-  execHistories.value = [
-    {
-      id: 1,
-      task_id: 1,
-      type: 1,
-      status: 1,
-      content: "hello my fucking design",
-      host_name: "root01",
-      created_time: "2020-05-05 12:12:12",
-      time_consume: 0.11
-    },
-    {
-      id: 2,
-      task_id: 1,
-      type: 1,
-      status: 0,
-      content: "hello",
-      host_name: "root02",
-      created_time: "2020-05-05 12:12:12",
-      time_consume: 0.11
-    },
-    {
-      id: 3,
-      task_id: 1,
-      type: 1,
-      status: 1,
-      content: "hello",
-      host_name: "root03",
-      created_time: "2020-05-05 12:12:12",
-      time_consume: 0.11
-    },
-    {
-      id: 4,
-      task_id: 1,
-      type: 1,
-      status: 0,
-      content: "hello\nhello",
-      host_name: "root04",
-      created_time: "2020-05-05 12:12:12",
-      time_consume: 0.11
-    }
-  ];
-  historyInfo.value = {
-    avg_cost: 0.057,
-    success_count: 5,
-    fail_count: 0,
-    exec_histories: execHistories.value
-  };
-});
+onBeforeMount(() => {});
 
 // 监听父组件的visible属性
 watchEffect(() => {
   dialogVisible.value = props.visible;
+  if (props.visible) {
+    getExecHistoryInfos({
+      task_id: props.task_id,
+      exec_id: props.exec_id
+    }).then((res: any) => {
+      console.log(res);
+      historyInfo.value = res.data;
+      execHistories.value = res.data.exec_histories;
+    });
+  }
 });
 </script>
 

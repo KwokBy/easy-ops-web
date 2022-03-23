@@ -91,7 +91,11 @@
         </template>
       </el-table-column>
     </el-table>
-    <History :visible="historyVisible" @resetVisible="resetVisible()"></History>
+    <History
+      :visible="historyVisible"
+      :id="taskID"
+      @resetVisible="resetVisible()"
+    ></History>
   </el-card>
 </template>
 
@@ -206,8 +210,10 @@ const handleStop = (index: number, row: Schedule) => {
     }
   });
 };
+let taskID = ref<number>(0);
 const handleHistory = (index: number, row: Schedule) => {
   historyVisible.value = true;
+  taskID.value = row.id;
 };
 const radio1 = ref("全部");
 </script>

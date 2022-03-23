@@ -1,3 +1,4 @@
+import { getExecHistories } from "/@/api/exec_history";
 <template>
   <div>
     <el-dialog
@@ -52,6 +53,8 @@
     <HistoryInfo
       :visible="historyInfoVisible"
       @resetVisible="resetVisible()"
+      :task_id="taskID"
+      :exec_id="execID"
     ></HistoryInfo>
   </div>
 </template>
@@ -61,6 +64,7 @@ import { onBeforeMount, ref, watchEffect } from "vue";
 import { ElDialog, ElTable, ElTableColumn } from "element-plus";
 import { Table, History } from "./types";
 import HistoryInfo from "/@/views/task/schedule/historyInfo.vue";
+import { getExecHistories } from "/@/api/exec_history";
 const historyInfoVisible = ref(false);
 const statusMap = {
   0: "失败",
@@ -80,13 +84,21 @@ const tableDataLabel: Table[] = [
   }
 ];
 let tableData = ref<History[]>([]);
+let taskID = ref<number>(0);
+let execID = ref<number>(0);
 const handleDetail = (index: number, row: History) => {
   historyInfoVisible.value = true;
+  execID.value = row.exec_id;
+  taskID.value = row.task_id;
 };
 const props = defineProps({
   visible: {
     type: Boolean,
     default: false
+  },
+  id: {
+    type: Number,
+    default: 0
   }
 });
 
@@ -94,28 +106,20 @@ const dialogVisible = ref(false);
 
 const emit = defineEmits(["resetVisible"]);
 
-onBeforeMount(() => {
-  tableData.value = [
-    {
-      task_id: 1,
-      status: 1,
-      exec_time: "2020-05-05 12:12:12",
-      exec_id: 1
-    },
-    {
-      task_id: 2,
-      status: 0,
-      exec_time: "2020-05-05 12:12:12",
-      exec_id: 1
-    }
-  ];
-});
+onBeforeMount(() => {});
 const resetVisible = () => {
   historyInfoVisible.value = false;
 };
 // 监听父组件的visible属性
 watchEffect(() => {
   dialogVisible.value = props.visible;
+  getExecHistories({
+    task_id: props.id
+  }).then((res: any) => {
+    if (res.code === 0) {
+      tableData.value = res.data;
+    }
+  });
 });
 </script>
 
