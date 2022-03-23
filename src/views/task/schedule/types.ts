@@ -28,7 +28,7 @@ export interface History {
 }
 
 export interface HistoryInfo {
-  avg_cost: number;
+  avg_count: number;
   fail_count: number;
   success_count: number;
   exec_histories: ExecHistory[];

@@ -9,24 +9,24 @@ import { getExecHistoryInfos } from "/@/api/exec_history_info";
       @close="emit('resetVisible')"
     >
       <el-row :gutter="10" justify="center">
-        <el-col :span="6">
+        <el-col :span="6" v-if="historyInfo !== undefined">
           <el-row :gutter="10" justify="center"> 执行成功 </el-row>
           <el-row :gutter="10" justify="center">
             {{ historyInfo.success_count }}
           </el-row>
         </el-col>
         <el-divider direction="vertical" />
-        <el-col :span="4" :offset="2">
+        <el-col :span="4" :offset="2" v-if="historyInfo !== undefined">
           <el-row :gutter="10" justify="center"> 执行失败 </el-row>
           <el-row :gutter="10" justify="center">
             {{ historyInfo.fail_count }}
           </el-row></el-col
         >
         <el-divider direction="vertical" />
-        <el-col :span="4" :offset="2">
-          <el-row :gutter="10" justify="center"> 平均耗时 </el-row>
+        <el-col :span="4" :offset="2" v-if="historyInfo !== undefined">
+          <el-row :gutter="10" justify="center"> 平均耗时(秒) </el-row>
           <el-row :gutter="10" justify="center">
-            {{ historyInfo.avg_cost }}
+            {{ historyInfo.avg_count.toFixed(3) }}
           </el-row></el-col
         >
       </el-row>
@@ -47,9 +47,9 @@ import { getExecHistoryInfos } from "/@/api/exec_history_info";
             <el-descriptions-item label="执行时间">{{
               execHistory.created_time
             }}</el-descriptions-item>
-            <el-descriptions-item label="运行耗时">{{
-              execHistory.time_consume
-            }}</el-descriptions-item>
+            <el-descriptions-item label="运行耗时"
+              >{{ execHistory.time_consume.toFixed(3) }} s</el-descriptions-item
+            >
             <el-descriptions-item label="执行结果">{{
               execHistory.status
             }}</el-descriptions-item>
@@ -102,8 +102,8 @@ const colorMap = {
 const dialogVisible = ref(false);
 
 const emit = defineEmits(["resetVisible"]);
-const historyInfo = ref<HistoryInfo>();
-const execHistories = ref<ExecHistory[]>([]);
+let historyInfo = ref<HistoryInfo>();
+let execHistories = ref<ExecHistory[]>([]);
 onBeforeMount(() => {});
 
 // 监听父组件的visible属性
@@ -114,9 +114,8 @@ watchEffect(() => {
       task_id: props.task_id,
       exec_id: props.exec_id
     }).then((res: any) => {
-      console.log(res);
       historyInfo.value = res.data;
-      execHistories.value = res.data.exec_histories;
+      execHistories.value = res.data.exec_history;
     });
   }
 });
