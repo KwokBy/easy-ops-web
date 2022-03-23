@@ -13,3 +13,34 @@ export interface Schedule {
   start: string;
   end: string;
 }
+
+export interface Table {
+  label: string;
+  prop: string;
+  align: string;
+}
+
+export interface History {
+  exec_time: string;
+  status: number;
+  task_id: number;
+  exec_id: number;
+}
+
+export interface HistoryInfo {
+  avg_cost: number;
+  fail_count: number;
+  success_count: number;
+  exec_histories: ExecHistory[];
+}
+
+export interface ExecHistory {
+  id: number;
+  task_id: number;
+  type: number;
+  status: number;
+  content: string;
+  host_name: string;
+  created_time: string;
+  time_consume: number;
+}

@@ -73,6 +73,12 @@
           <el-button
             size="small"
             type="text"
+            @click="handleHistory(scope.$index, scope.row)"
+            >执行历史</el-button
+          >
+          <el-button
+            size="small"
+            type="text"
             @click="handleActive(scope.$index, scope.row)"
             >激活</el-button
           >
@@ -85,6 +91,7 @@
         </template>
       </el-table-column>
     </el-table>
+    <History :visible="historyVisible" @resetVisible="resetVisible()"></History>
   </el-card>
 </template>
 
@@ -104,6 +111,7 @@ import {
   ElRadioButton
 } from "element-plus";
 import Dialog from "/@/views/task/schedule/dialog.vue";
+import History from "/@/views/task/schedule/history.vue";
 import { Plus } from "@element-plus/icons-vue";
 import { activeTask, execTest, getTasks, stopTask } from "../../../api/task";
 import { Schedule } from "./types";
@@ -131,6 +139,7 @@ const tagMap = {
 };
 const dialogVisible = ref(false);
 const editVisible = ref(false);
+const historyVisible = ref(false);
 const tableRef = ref();
 const tableDataLabel: Table[] = [
   {
@@ -176,6 +185,7 @@ onBeforeMount(() => {
 const resetVisible = () => {
   dialogVisible.value = false;
   editVisible.value = false;
+  historyVisible.value = false;
 };
 const handleExec = (index: number, row: Schedule) => {
   execTest(row).then((res: response) => {});
@@ -195,6 +205,9 @@ const handleStop = (index: number, row: Schedule) => {
       tableData.value[index].status = 0;
     }
   });
+};
+const handleHistory = (index: number, row: Schedule) => {
+  historyVisible.value = true;
 };
 const radio1 = ref("全部");
 </script>
