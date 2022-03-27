@@ -23,5 +23,6 @@ export default {
   resourceHost: "host",
   resourceTerminal: "web terminal",
   taskPage: "task",
-  taskSchedule: "Task Schedule"
+  taskSchedule: "Task Schedule",
+  imagePage: "Image"
 };

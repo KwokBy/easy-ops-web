@@ -23,5 +23,6 @@ export default {
   resourceHost: "主机管理",
   resourceTerminal: "WEB终端",
   taskPage: "任务管理",
-  taskSchedule: "任务调度"
+  taskSchedule: "任务调度",
+  imagePage: "镜像管理"
 };

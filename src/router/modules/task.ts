@@ -22,6 +22,15 @@ const taskRouter = {
         title: $t("menus.taskSchedule"),
         i18n: true
       }
+    },
+    {
+      path: "/task/exec",
+      name: "exec",
+      component: () => import("/@/views/task/exec/index.vue"),
+      meta: {
+        title: $t("menus.taskSchedule"),
+        i18n: true
+      }
     }
   ]
 };
