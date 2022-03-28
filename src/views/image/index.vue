@@ -26,14 +26,11 @@ term.loadAddon(fitAddon);
 fitAddon.fit();
 // const route = useRoute();
 // const id = route.query?.id ?? -1;
-const ws = new WebSocket(
-  // "ws://localhost:8080/api/v1/ws/ssh?cols=300&rows=250&id=" + id
-  "ws://localhost:8080/api/v1/image/debug"
-);
+const ws = new WebSocket("ws://localhost:8080/api/v1/image/debug");
 onMounted(() => {
   term.open(document.getElementById("terminal")); //绑定dom节点
   term.focus(); // 取得输入焦点
-  // term.writeln("Connecting..."); // 写一行测试
+  term.writeln("Connecting..."); // 写一行测试
   ws.onclose = function () {
     ElMessage.warning({
       message: "链接已关闭",
@@ -80,7 +77,7 @@ onUnmounted(() => {
 
 <script lang="ts">
 export default {
-  name: "detail"
+  name: "imageIndex"
 };
 </script>
 

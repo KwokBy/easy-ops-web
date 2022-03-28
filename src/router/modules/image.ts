@@ -10,13 +10,12 @@ const imageRouter = {
     icon: "position",
     title: $t("menus.imagePage"),
     i18n: true,
-    rank: 10,
-    keepAlive: true
+    rank: 11
   },
   children: [
     {
-      path: "/image",
-      name: "image",
+      path: "/image/index",
+      name: "imageIndex",
       component: () => import("/@/views/image/index.vue"),
       meta: {
         title: $t("menus.imagePage"),
