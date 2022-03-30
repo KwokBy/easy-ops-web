@@ -21,6 +21,19 @@ const imageRouter = {
         title: $t("menus.imagePage"),
         i18n: true
       }
+    },
+    {
+      path: "/image/index/terminal",
+      name: "imageTerminal",
+      component: () => import("/@/views/image/terminal.vue"),
+      meta: {
+        title: "",
+        showLink: false,
+        i18n: false,
+        dynamicLevel: 3,
+        refreshRedirect: "/image/index",
+        keepAlive: true
+      }
     }
   ]
 };

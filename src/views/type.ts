@@ -4,3 +4,10 @@ export type infoType = {
   info?: string;
   accessToken?: string;
 };
+
+export interface Table {
+  label: string;
+  prop: string;
+  align: string;
+}
+

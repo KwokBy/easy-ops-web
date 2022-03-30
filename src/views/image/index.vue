@@ -1,79 +1,67 @@
 <template>
-  <div ref="terminal" id="terminal"></div>
+  <div>
+    <el-row :gutter="10" style="margin-bottom: 10px" justify="end">
+      <el-col :span="2">
+        <el-button type="primary" :icon="Plus" @click="dialogVisible = true"
+          >新建
+        </el-button>
+      </el-col>
+    </el-row>
+    <Dialog :visible="dialogVisible" @resetVisible="resetVisible()"></Dialog>
+    <Dialog
+      :visible="editVisible"
+      @resetVisible="resetVisible()"
+      :editData="editData"
+    ></Dialog>
+    <el-table
+      :data="tableData"
+      style="width: 100%"
+      border
+      :header-cell-style="{ background: '#FAFAFA' }"
+      :ref="tableRef"
+    >
+      <el-table-column
+        v-for="(item, index) in tableDataLabel"
+        :key="index"
+        :label="item.label"
+        :prop="item.prop"
+        :align="item.align"
+      />
+      <el-table-column
+        header-align="center"
+        align="center"
+        prop="status"
+        label="状态"
+      >
+        <template v-slot="scope">
+          <el-tag
+            :type="tagMap[scope.row.status]"
+            :key="scope.row.id"
+            :style="{ marginRight: '10px' }"
+          >
+            {{ statusMap[scope.row.status] }}
+          </el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" align="center">
+        <template #default="scope">
+          <el-button
+            size="small"
+            type="text"
+            @click="handleDebug(scope.$index, scope.row)"
+            >调试</el-button
+          >
+          <el-button
+            size="small"
+            type="text"
+            @click="handleEdit(scope.$index, scope.row)"
+            >编辑</el-button
+          >
+        </template>
+      </el-table-column>
+    </el-table>
+  </div>
 </template>
-
-<script lang="ts" setup>
-import { onMounted, onUnmounted } from "vue";
-import { Terminal } from "xterm";
-import { FitAddon } from "xterm-addon-fit";
-import "xterm/css/xterm.css";
-import { ElMessage } from "element-plus";
-import { Base64 } from "js-base64";
-
-const term = new Terminal({
-  rendererType: "canvas",
-  cursorBlink: true,
-  convertEol: true,
-  scrollback: 800,
-  theme: {
-    foreground: "white",
-    background: "#181E29"
-  }
-});
-const fitAddon = new FitAddon();
-// canvas背景全屏
-term.loadAddon(fitAddon);
-fitAddon.fit();
-// const route = useRoute();
-// const id = route.query?.id ?? -1;
-const ws = new WebSocket("ws://localhost:8080/api/v1/image/debug");
-onMounted(() => {
-  term.open(document.getElementById("terminal")); //绑定dom节点
-  term.focus(); // 取得输入焦点
-  term.writeln("Connecting..."); // 写一行测试
-  ws.onclose = function () {
-    ElMessage.warning({
-      message: "链接已关闭",
-      type: "warning",
-      center: true
-    });
-  };
-  ws.onmessage = function (e) {
-    // 服务端ssh输出, 写到web shell展示
-    term.write(e.data);
-  };
-  ws.onerror = function () {
-    ElMessage.error({
-      message: "请更换，shell环境再试一下",
-      type: "error",
-      center: true
-    });
-  };
-  // 当浏览器窗口变化时, 重新适配终端
-  window.addEventListener("resize", function () {
-    fitAddon.fit();
-    // 把web终端的尺寸term.rows和term.cols发给服务端, 通知sshd调整输出宽度
-    var msg = { type: 2, rows: term.rows, cols: term.cols };
-    ws.send(JSON.stringify(msg));
-  });
-  // 当向web终端敲入字符时候的回调
-  term.onKey(e => {
-    //给后端发送数据
-    // 写给服务端, 由服务端发给container
-    var msg = { type: 1, cmd: Base64.encode(e.key) };
-    ws.send(JSON.stringify(msg));
-  });
-  // 支持输入与粘贴方法
-  term.onData(function (input) {
-    // 写给服务端, 由服务端发给container
-    var msg = { type: 1, cmd: input };
-    ws.send(JSON.stringify(msg));
-  });
-});
-onUnmounted(() => {
-  ws.close();
-});
-</script>
 
 <script lang="ts">
 export default {
@@ -81,4 +69,87 @@ export default {
 };
 </script>
 
-<style></style>
+<script lang="ts" setup>
+import { onBeforeMount, ref } from "vue";
+import { Table } from "/@/views/type";
+import { Image } from "./types";
+import { getImages } from "../../api/image";
+import { ElTable, ElTableColumn, ElButton, ElTag } from "element-plus";
+import { Plus } from "@element-plus/icons-vue";
+import Dialog from "/@/views/image/dialog.vue";
+import { useRouter, useRoute } from "vue-router";
+import { useMultiTagsStoreHook } from "/@/store/modules/multiTags";
+const statusMap = {
+  0: "未发布",
+  1: "已发布"
+};
+const tagMap = {
+  0: "info",
+  1: "success"
+};
+const tableRef = ref();
+const tableDataLabel: Table[] = [
+  {
+    label: "镜像名",
+    prop: "name",
+    align: "center"
+  },
+  {
+    label: "版本",
+    prop: "version",
+    align: "center"
+  },
+  {
+    label: "描述",
+    prop: "desc",
+    align: "center"
+  },
+  {
+    label: "更新时间",
+    prop: "updated_time",
+    align: "center"
+  }
+];
+let tableData = ref<Image[]>([]);
+let editData = ref<Image>();
+const handleEdit = (index: number, row: Image) => {
+  editData.value = row;
+  editVisible.value = true;
+};
+const dialogVisible = ref(false);
+const editVisible = ref(false);
+const terminalVisible = ref(false);
+onBeforeMount(() => {
+  getImages({
+    owner: "doubleguo"
+  }).then((res: any) => {
+    if (res.code === 0) {
+      tableData.value = res.data;
+    }
+  });
+});
+const resetVisible = () => {
+  dialogVisible.value = false;
+  editVisible.value = false;
+  terminalVisible.value = false;
+};
+
+const router = useRouter();
+const route = useRoute();
+function handleDebug(index: number, image: Image) {
+  useMultiTagsStoreHook().handleTags("push", {
+    path: `/image/index/terminal`,
+    parentPath: route.matched[0].path,
+    name: "imageTerminal",
+    query: { id: image.id },
+    meta: {
+      title: { zh: image.name, en: image.name },
+      showLink: false,
+      i18n: false,
+      dynamicLevel: 3,
+      keepAlive: true
+    }
+  });
+  router.push({ name: "imageTerminal", query: { id: image.id } });
+}
+</script>
