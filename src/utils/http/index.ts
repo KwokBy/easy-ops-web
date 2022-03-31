@@ -70,11 +70,11 @@ class PureHttp {
             useUserStoreHook()
               .refreshToken(data)
               .then((res: resultType) => {
-                config.headers["Authorization"] = "Bearer " + res.accessToken;
+                config.headers["Authorization"] = res.accessToken;
                 return $config;
               });
           } else {
-            config.headers["Authorization"] = "Bearer " + data.accessToken;
+            config.headers["Authorization"] = data.accessToken;
             return $config;
           }
         } else {

@@ -2,31 +2,36 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { initRouter } from "/@/router/utils";
-import { storageSession } from "/@/utils/storage";
+// import { storageSession } from "/@/utils/storage";
 import { addClass, removeClass } from "/@/utils/operate";
 import bg from "/@/assets/login/bg.png";
 import avatar from "/@/assets/login/avatar.svg?component";
 import illustration from "/@/assets/login/illustration.svg?component";
 import { getLogin } from "../api/user";
+import { setToken } from "../utils/auth";
+import { storageSession } from "../utils/storage";
 
 const router = useRouter();
 
-let user = ref("admin");
+let user = ref("doubleguo");
 let pwd = ref("123456");
 
 const onLogin = (): void => {
-  storageSession.setItem("info", {
-    username: "admin",
-    accessToken: "eyJhbGciOiJIUzUxMiJ9.test"
+  getLogin({
+    username: user.value,
+    password: pwd.value
+  }).then((res: any) => {
+    if (res.code === 0) {
+      storageSession.setItem("info", {
+        username: res.data.username,
+        accessToken: res.data.accessToken
+      });
+      setToken(res.data);
+      initRouter(res.data.username).then(() => {
+        router.push("/");
+      });
+    }
   });
-  initRouter("admin").then(() => {});
-  console.log(
-    getLogin({
-      username: user.value,
-      password: pwd.value
-    })
-  );
-  router.push("/");
 };
 
 function onUserFocus() {
