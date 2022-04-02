@@ -24,5 +24,8 @@ export default {
   resourceTerminal: "web terminal",
   taskPage: "task",
   taskSchedule: "Task Schedule",
-  imagePage: "Image"
+  imagePage: "Image",
+  systemPage: "System",
+  systemAccount: "Account",
+  systemRole: "Role"
 };

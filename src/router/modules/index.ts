@@ -6,6 +6,7 @@ import externalLink from "./externalLink";
 import remainingRouter from "./remaining";
 import taskRouter from "./task";
 import imageRouter from "./image";
+import systemRouter from "./system";
 import { RouteRecordRaw, RouteComponent } from "vue-router";
 
 import {
@@ -22,7 +23,8 @@ const routes = [
   externalLink,
   resourceRouter,
   taskRouter,
-  imageRouter
+  imageRouter,
+  systemRouter
 ];
 
 // 导出处理后的静态路由（三级及以上的路由全部拍成二级）

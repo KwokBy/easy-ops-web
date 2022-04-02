@@ -24,5 +24,8 @@ export default {
   resourceTerminal: "WEB终端",
   taskPage: "任务管理",
   taskSchedule: "任务调度",
-  imagePage: "镜像管理"
+  imagePage: "镜像管理",
+  systemPage: "系统管理",
+  systemAccount: "账号管理",
+  systemRole: "角色管理"
 };
