@@ -95,6 +95,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
         // 新增无id
       } else {
         console.log(hostForm);
+        hostForm.port = Number(hostForm.port);
         addHost(hostForm).then(res => {
           emitsDialog("close");
           hostForm = {} as Host;
