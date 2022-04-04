@@ -8,7 +8,16 @@
         @click="toDetail(host.id, host.name)"
         style="margin: 10px"
       >
-        <el-card shadow="always"> {{ host.name }} </el-card>
+        <el-card shadow="always" justify="center">
+          <el-row :gutter="10">
+            <el-icon :color="colorMap[host.status]" :size="100">
+              <Monitor></Monitor
+            ></el-icon>
+          </el-row>
+          <el-row :gutter="10" justify="center">
+            {{ host.name }}
+          </el-row>
+        </el-card>
       </el-col>
     </el-card>
   </div>
@@ -20,6 +29,7 @@ import { useMultiTagsStoreHook } from "/@/store/modules/multiTags";
 import { ElCard, ElCol } from "element-plus";
 import { onBeforeMount, ref } from "vue";
 import { getHosts } from "/@/api/host";
+import { Monitor } from "@element-plus/icons-vue";
 const router = useRouter();
 const route = useRoute();
 function toDetail(index: number, name: string) {
@@ -49,8 +59,13 @@ interface Host {
   desc: string;
   port: number;
   updated_time: string;
+  status: number;
 }
 let hosts = ref<Host[]>([]);
+const colorMap = {
+  0: "#F56C6C",
+  1: "#409EFF"
+};
 interface response {
   code: number;
   data: Host[];
