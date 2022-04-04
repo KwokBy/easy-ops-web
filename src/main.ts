@@ -7,7 +7,7 @@ import { usI18n } from "../src/plugins/i18n";
 import { MotionPlugin } from "@vueuse/motion";
 import { useElementPlus } from "../src/plugins/element-plus";
 import { injectResponsiveStorage } from "/@/utils/storage/responsive";
-
+import * as Icons from "@element-plus/icons-vue";
 import "animate.css";
 import "virtual:windi.css";
 // 导入公共样式
@@ -33,7 +33,10 @@ import {
 app.component("IconifyIconOffline", IconifyIconOffline);
 app.component("IconifyIconOnline", IconifyIconOnline);
 app.component("FontIcon", FontIcon);
-
+// 注册全局组件
+Object.keys(Icons).forEach(key => {
+  app.component(key, Icons[key as keyof typeof Icons]);
+});
 getServerConfig(app).then(async config => {
   app.use(router);
   await router.isReady();

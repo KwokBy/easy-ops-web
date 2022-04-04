@@ -11,3 +11,42 @@ export interface Table {
   align: string;
 }
 
+export interface State {
+  os: OS;
+  cpu: CPU;
+  disk: Disk;
+  ram: Ram;
+}
+
+export interface OS {
+  goos: string;
+  numCpu: number;
+  compiler: string;
+  goVersion: string;
+  numGoroutine: number;
+}
+
+export interface CPU {
+  cores: number;
+  cpus: CPUInfo[];
+}
+
+export interface CPUInfo {
+  percentage: number;
+}
+
+export interface Disk {
+  total_mb: number;
+  used_mb: number;
+  total_gb: number;
+  used_gb: number;
+  used_percent: number;
+}
+
+export interface Ram {
+  total_mb: number;
+  used_mb: number;
+  total_gb: number;
+  used_gb: number;
+  used_percent: number;
+}
