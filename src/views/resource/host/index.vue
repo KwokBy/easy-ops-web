@@ -125,12 +125,12 @@ const tableDataLabel: Table[] = [
     label: "描述",
     prop: "desc",
     align: "center"
-  },
-  {
-    label: "配置信息",
-    prop: "info",
-    align: "center"
   }
+  // {
+  //   label: "配置信息",
+  //   prop: "info",
+  //   align: "center"
+  // }
 ];
 
 let editData = ref<Host>({} as Host);
@@ -143,37 +143,27 @@ const handleDelete = (index: number, row: Host) => {
   delHost({
     host_id: row.id
   }).then((res: response) => {
-    if (res.code === 0) {
-      ElMessage.success({
-        message: "删除成功",
-        type: "success",
-        center: true
-      });
-    } else {
-      ElMessage.error({
-        message: "删除失败",
-        type: "error",
-        center: true
-      });
-    }
+    ElMessage.success({
+      message: "删除成功",
+      type: "success",
+      center: true
+    });
+    getHosts({
+      owner: "doubleguo"
+    }).then((res: response) => {
+      tableData.value = res.data;
+      tableData.value.splice(1, 0);
+    });
   });
 };
 
 const handleCheck = (index: number, row: Host) => {
   verifyHost(row).then((res: response) => {
-    if (res.code === 0) {
-      ElMessage.success({
-        message: "验证成功",
-        type: "success",
-        center: true
-      });
-    } else {
-      ElMessage.error({
-        message: "验证失败",
-        type: "error",
-        center: true
-      });
-    }
+    ElMessage.success({
+      message: "验证成功",
+      type: "success",
+      center: true
+    });
   });
 };
 

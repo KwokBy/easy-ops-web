@@ -23,9 +23,9 @@ export default {
   resourceHost: "主机管理",
   resourceTerminal: "WEB终端",
   taskPage: "任务管理",
-  taskSchedule: "任务调度",
+  taskSchedule: "任务管理",
   imagePage: "镜像管理",
-  systemPage: "系统管理",
+  systemPage: "权限管理",
   systemAccount: "账号管理",
   systemRole: "角色管理"
 };

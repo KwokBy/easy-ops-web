@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     v-model="dialogVisible"
-    title="Tips"
+    title="新建主机"
     width="50%"
     draggable
     @close="emit('resetVisible')"

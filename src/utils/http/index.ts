@@ -11,6 +11,7 @@ import NProgress from "../progress";
 import { loadEnv } from "@build/index";
 import { getToken } from "/@/utils/auth";
 import { useUserStoreHook } from "/@/store/modules/user";
+import { ElMessage } from "element-plus";
 
 // 加载环境变量 VITE_PROXY_DOMAIN（开发环境）  VITE_PROXY_DOMAIN_REAL（打包后的线上环境）
 const { VITE_PROXY_DOMAIN, VITE_PROXY_DOMAIN_REAL } = loadEnv();
@@ -92,6 +93,14 @@ class PureHttp {
     const instance = PureHttp.axiosInstance;
     instance.interceptors.response.use(
       (response: PureHttpResponse) => {
+        if (response.data.code === 7) {
+          ElMessage({
+            showClose: true,
+            message: response.data.msg,
+            type: "error"
+          });
+          return Promise.reject(response);
+        }
         const $config = response.config;
         // 关闭进度条动画
         NProgress.done();

@@ -76,7 +76,7 @@ function onPwdBlur() {
             }
           }"
         >
-          Pure Admin
+          Easy Ops
         </h2>
         <div
           class="input-group user focus"

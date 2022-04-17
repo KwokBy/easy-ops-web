@@ -112,7 +112,8 @@ import {
   ElTableColumn,
   ElCard,
   ElRadioGroup,
-  ElRadioButton
+  ElRadioButton,
+  ElMessage
 } from "element-plus";
 import Dialog from "/@/views/task/schedule/dialog.vue";
 import History from "/@/views/task/schedule/history.vue";
@@ -192,7 +193,13 @@ const resetVisible = () => {
   historyVisible.value = false;
 };
 const handleExec = (index: number, row: Schedule) => {
-  execTest(row).then((res: response) => {});
+  execTest(row).then((res: response) => {
+    ElMessage.success({
+      message: "执行成功",
+      type: "success",
+      center: true
+    });
+  });
 };
 const handleActive = (index: number, row: Schedule) => {
   activeTask(row).then((res: response) => {

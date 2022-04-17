@@ -27,16 +27,16 @@
       >
     </el-form-item>
     <el-form-item label="主机密码" prop="password">
-      <el-input v-model="hostForm.password" />
+      <el-input v-model="hostForm.password" type="password" />
     </el-form-item>
     <el-form-item label="备注信息" prop="desc">
       <el-input v-model="hostForm.desc" type="textarea" />
     </el-form-item>
     <el-form-item>
       <el-button type="primary" @click="submitForm(hostFormRef)"
-        >Create</el-button
+        >确定</el-button
       >
-      <el-button @click="resetForm(hostFormRef)">Reset</el-button>
+      <el-button @click="resetForm(hostFormRef)">重置</el-button>
     </el-form-item>
   </el-form>
 </template>
@@ -67,9 +67,8 @@ interface Host {
 // let hostForm = ref<Host>({} as Host);
 let hostForm = reactive<Host>({} as Host);
 const rules = reactive({
-  name: [
-    { required: true, message: "Please input Activity name", trigger: "blur" }
-  ]
+  name: [{ required: true, message: "请输入主机名", trigger: "blur" }],
+  password: [{ required: true, message: "请输入主机密码", trigger: "blur" }]
 });
 
 const props = defineProps({

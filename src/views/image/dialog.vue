@@ -2,7 +2,7 @@
   <div>
     <el-dialog
       v-model="dialogVisible"
-      title="新建任务"
+      title="新建镜像"
       width="50%"
       draggable
       @close="emit('resetVisible')"
@@ -25,9 +25,12 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="submitForm(imageFormRef)"
-            >Create</el-button
+            >确认</el-button
           >
-          <el-button @click="resetForm(imageFormRef)">Reset</el-button>
+          <el-button type="primary" @click="submitForm(imageFormRef)"
+            >调试</el-button
+          >
+          <el-button @click="resetForm(imageFormRef)">重置</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
