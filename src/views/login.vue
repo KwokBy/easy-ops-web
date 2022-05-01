@@ -30,6 +30,7 @@ const onLogin = (): void => {
       initRouter(res.data.username).then(() => {
         router.push("/");
       });
+      router.push("/");
     }
   });
 };

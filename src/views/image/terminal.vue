@@ -27,7 +27,7 @@ term.loadAddon(fitAddon);
 fitAddon.fit();
 const route = useRoute();
 const id = route.query?.id ?? 1;
-const ws = new WebSocket("ws://localhost:8080/api/v1/image/debug?id=" + id);
+const ws = new WebSocket("ws://42.192.11.9/ws/api/v1/image/debug?id=" + id);
 onActivated(() => {
   console.log("activated");
 });
