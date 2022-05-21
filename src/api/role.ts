@@ -15,5 +15,5 @@ export const getApi = () => {
 };
 
 export const getPermission = (data: object) => {
-  return http.request("post", BaseURL + "/permission", { data });
+  return http.request("post", BaseURL + "/permissions", { data });
 };

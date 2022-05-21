@@ -38,7 +38,11 @@
         </template>
       </el-table-column>
     </el-table>
-    <Drawer :visible="roleVisible" @resetVisible="resetVisible()"></Drawer>
+    <Drawer
+      :visible="roleVisible"
+      @resetVisible="resetVisible()"
+      :row="treeData"
+    ></Drawer>
   </el-card>
 </template>
 
@@ -78,8 +82,10 @@ const tableDataLabel: Table[] = [
 ];
 
 let editData = ref<Role>({} as Role);
+let treeData = ref<Role>({} as Role);
 
 const setRole = (index: number, row: Role) => {
+  treeData.value = row;
   roleVisible.value = true;
 };
 let tableData = ref<Role[]>([]);

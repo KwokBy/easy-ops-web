@@ -12,9 +12,9 @@
     node-key="name"
     :filter-node-method="filterNode"
   />
-  <el-row justify="end" style="margin-top: 10px">
+  <!-- <el-row justify="end" style="margin-top: 10px">
     <el-button type="primary" @click="getCheckedKeys">确定</el-button>
-  </el-row>
+  </el-row> -->
 </template>
 
 <script lang="ts">
@@ -24,11 +24,11 @@ export default {
 </script>
 
 <script lang="ts" setup>
-import { ref, watch } from "vue";
+import { ref, watch, watchEffect } from "vue";
 import { ElTree, ElInput } from "element-plus";
-import { Api, Casbin } from "./types";
-import { getApi } from "/@/api/role";
-
+import { Api } from "./types";
+import { getApi, getPermission } from "/@/api/role";
+// import { Role } from "../account/types";
 interface Tree {
   id: number;
   label: string;
@@ -51,9 +51,14 @@ const filterNode = (value: string, data: Tree) => {
   if (!value) return true;
   return data.label.includes(value);
 };
-
+const props = defineProps({
+  roleID: {
+    type: Number,
+    default: 888
+  }
+});
 let data = ref([] as Tree[]);
-const apiTreeIds = ref([]);
+let apiTreeIds = ref([]);
 // const apiTreeData = ref([]);
 let apis: Api[] = [
   // {
@@ -82,6 +87,15 @@ const init = async () => {
   const res: any = await getApi();
   apis = res.data;
   buildApiTree(apis);
+  const permission: any = await getPermission({
+    role_id: props.roleID
+  });
+  apiTreeIds.value = [];
+  console.log(permission);
+  console.log(apiTreeIds.value);
+  for (const item of permission.data.apis) {
+    apiTreeIds.value.push(item.v1);
+  }
 };
 
 init();
@@ -106,21 +120,25 @@ const buildApiTree = (apis: Api[]) => {
     }
   }
   data.value = apiTree;
-  apiTreeIds.value = ["/api/v1/host/get", "/api/v1/host/add"];
+  // apiTreeIds.value = ["/api/v1/host/get", "/api/v1/host/add"];
 };
 
-const getCheckedKeys = () => {
-  console.log(treeRef.value!.getCheckedNodes(true));
-  const casbin: Casbin = {
-    role_id: "888",
-    casbin_info: []
-  };
-  treeRef.value!.getCheckedNodes(true).forEach(node => {
-    casbin.casbin_info.push({
-      path: node.name,
-      method: node.method
-    });
-  });
-  console.log(casbin);
-};
+// const getCheckedKeys = () => {
+//   console.log(treeRef.value!.getCheckedNodes(true));
+//   const casbin: Casbin = {
+//     role_id: "888",
+//     casbin_info: []
+//   };
+//   treeRef.value!.getCheckedNodes(true).forEach(node => {
+//     casbin.casbin_info.push({
+//       path: node.name,
+//       method: node.method
+//     });
+//   });
+//   console.log(casbin);
+// };
+watchEffect(async () => {
+  console.log(props.roleID);
+  init();
+});
 </script>
