@@ -11,3 +11,8 @@ export const getImages = (data: object) => {
 export const addImage = (data: object) => {
   return http.request("post", BaseURL + "/add", { data });
 };
+
+// 删除镜像
+export const deleteImage = (data: object) => {
+  return http.request("post", BaseURL + "/delete", { data });
+};

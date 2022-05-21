@@ -37,7 +37,7 @@
 import { onBeforeMount, reactive, ref, watchEffect } from "vue";
 import { Role } from "./types";
 import { ElButton, ElDialog, ElForm, ElFormItem, ElInput } from "element-plus";
-import { addTask } from "/@/api/task";
+import { addRole } from "/@/api/role";
 
 const props = defineProps({
   visible: {
@@ -58,18 +58,15 @@ type FormInstance = InstanceType<typeof ElForm>;
 const roleFormRef = ref<FormInstance>();
 const roleForm = ref<Role>({} as Role);
 
-const rules = reactive({
-  name: [
-    { required: true, message: "Please input Activity name", trigger: "blur" }
-  ]
-});
+const rules = reactive({});
 
 const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   await formEl.validate((valid, fields) => {
     if (valid) {
       const data = reactive({ ...roleForm.value });
-      addTask(data).then(res => {
+      data.role_id = Number(data.role_id);
+      addRole(data).then(() => {
         emit("resetVisible");
       });
     } else {

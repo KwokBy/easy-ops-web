@@ -32,20 +32,8 @@
           <el-button
             size="small"
             type="text"
-            @click="handleEdit(scope.$index, scope.row)"
-            >编辑</el-button
-          >
-          <el-button
-            size="small"
-            type="text"
             @click="setRole(scope.$index, scope.row)"
             >设置权限</el-button
-          >
-          <el-button
-            size="small"
-            type="text"
-            @click="handleDelete(scope.$index, scope.row)"
-            >删除</el-button
           >
         </template>
       </el-table-column>
@@ -66,6 +54,7 @@ import Dialog from "/@/views/system/role/dialog.vue";
 import { Plus } from "@element-plus/icons-vue";
 import { Role } from "./types";
 import Drawer from "/@/views/system/role/drawer.vue";
+import { getRoles } from "/@/api/role";
 interface Table {
   label: string;
   prop: string;
@@ -90,31 +79,15 @@ const tableDataLabel: Table[] = [
 
 let editData = ref<Role>({} as Role);
 
-const handleEdit = (index: number, row: Role) => {
-  editData.value = row;
-  editVisible.value = true;
-};
-const handleDelete = (index: number, row: Role) => {};
 const setRole = (index: number, row: Role) => {
   roleVisible.value = true;
 };
 let tableData = ref<Role[]>([]);
 
 onBeforeMount(() => {
-  tableData.value = [
-    {
-      id: 1,
-      role_id: 888,
-      name_zh: "管理员",
-      desc: "管理员"
-    },
-    {
-      id: 2,
-      role_id: 777,
-      name_zh: "普通用户",
-      desc: "普通用户"
-    }
-  ];
+  getRoles().then((res: any) => {
+    tableData.value = res.data;
+  });
 });
 
 const resetVisible = () => {

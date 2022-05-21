@@ -60,7 +60,7 @@
           <el-button
             size="small"
             type="text"
-            @click="handleEdit(scope.$index, scope.row)"
+            @click="handleDelete(scope.$index, scope.row)"
             >删除</el-button
           >
         </template>
@@ -79,7 +79,7 @@ export default {
 import { onBeforeMount, ref } from "vue";
 import { Table } from "/@/views/type";
 import { Image } from "./types";
-import { getImages } from "../../api/image";
+import { deleteImage, getImages } from "/@/api/image";
 import { ElTable, ElTableColumn, ElButton, ElTag } from "element-plus";
 import { Plus } from "@element-plus/icons-vue";
 import Dialog from "/@/views/image/dialog.vue";
@@ -121,6 +121,12 @@ let editData = ref<Image>();
 const handleEdit = (index: number, row: Image) => {
   editData.value = row;
   editVisible.value = true;
+};
+const handleDelete = (index: number, row: Image) => {
+  deleteImage({
+    name: row.name,
+    version: row.version
+  });
 };
 const dialogVisible = ref(false);
 const editVisible = ref(false);

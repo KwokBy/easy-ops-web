@@ -9,7 +9,7 @@
     default-expand-all
     :default-checked-keys="apiTreeIds"
     show-checkbox
-    node-key="id"
+    node-key="name"
     :filter-node-method="filterNode"
   />
   <el-row justify="end" style="margin-top: 10px">
@@ -27,6 +27,7 @@ export default {
 import { ref, watch } from "vue";
 import { ElTree, ElInput } from "element-plus";
 import { Api, Casbin } from "./types";
+import { getApi } from "/@/api/role";
 
 interface Tree {
   id: number;
@@ -51,32 +52,39 @@ const filterNode = (value: string, data: Tree) => {
   return data.label.includes(value);
 };
 
-let data: Tree[] = [];
+let data = ref([] as Tree[]);
 const apiTreeIds = ref([]);
-const apis: Api[] = [
-  {
-    id: 1,
-    models_name: "资源管理",
-    name: "/api/v1/host/get",
-    method: "POST",
-    desc: "获取主机列表"
-  },
-  {
-    id: 2,
-    models_name: "资源管理",
-    name: "/api/v1/host/add",
-    method: "POST",
-    desc: "添加主机"
-  },
-  {
-    id: 3,
-    models_name: "镜像管理",
-    name: "/api/v1/image/get",
-    method: "POST",
-    desc: "获取镜像列表"
-  }
+// const apiTreeData = ref([]);
+let apis: Api[] = [
+  // {
+  //   id: 1,
+  //   models_name: "资源管理",
+  //   name: "/api/v1/host/get",
+  //   method: "POST",
+  //   desc: "获取主机列表"
+  // },
+  // {
+  //   id: 2,
+  //   models_name: "资源管理",
+  //   name: "/api/v1/host/add",
+  //   method: "POST",
+  //   desc: "添加主机"
+  // },
+  // {
+  //   id: 3,
+  //   models_name: "镜像管理",
+  //   name: "/api/v1/image/get",
+  //   method: "POST",
+  //   desc: "获取镜像列表"
+  // }
 ];
+const init = async () => {
+  const res: any = await getApi();
+  apis = res.data;
+  buildApiTree(apis);
+};
 
+init();
 const buildApiTree = (apis: Api[]) => {
   const apiObj = {};
   apis.forEach(api => {
@@ -86,7 +94,6 @@ const buildApiTree = (apis: Api[]) => {
       apiObj[api.models_name] = [api];
     }
   });
-  console.log(apiObj);
   const apiTree = [];
   for (const key in apiObj) {
     if (Object.prototype.hasOwnProperty.call(apiObj, key)) {
@@ -98,10 +105,10 @@ const buildApiTree = (apis: Api[]) => {
       apiTree.push(treeNode);
     }
   }
-  data = apiTree;
-  apiTreeIds.value = [1, 3];
+  data.value = apiTree;
+  apiTreeIds.value = ["/api/v1/host/get", "/api/v1/host/add"];
 };
-buildApiTree(apis);
+
 const getCheckedKeys = () => {
   console.log(treeRef.value!.getCheckedNodes(true));
   const casbin: Casbin = {

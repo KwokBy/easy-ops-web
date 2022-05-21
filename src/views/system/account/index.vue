@@ -54,19 +54,13 @@
           <el-button
             size="small"
             type="text"
-            @click="handleEdit(scope.$index, scope.row)"
-            >编辑</el-button
-          >
-          <el-button
-            size="small"
-            type="text"
             @click="handleDelete(scope.$index, scope.row)"
             >删除</el-button
           >
           <el-button
             size="small"
             type="text"
-            @click="handleDelete(scope.$index, scope.row)"
+            @click="handleReset(scope.$index, scope.row)"
             >重置密码</el-button
           >
         </template>
@@ -93,6 +87,7 @@ import {
 import Dialog from "/@/views/system/account/dialog.vue";
 import { Plus } from "@element-plus/icons-vue";
 import { Role, User } from "./types";
+import { deleteUser, getUserList, resetPassword } from "/@/api/user";
 interface Table {
   label: string;
   prop: string;
@@ -137,14 +132,26 @@ const roles: Role[] = [
 ];
 let editData = ref<User>({} as User);
 
-const handleEdit = (index: number, row: User) => {
-  editData.value = row;
-  editVisible.value = true;
+// const handleEdit = (index: number, row: User) => {
+//   editData.value = row;
+//   editVisible.value = true;
+// };
+const handleDelete = (index: number, row: User) => {
+  deleteUser({
+    username: row.username
+  });
 };
-const handleDelete = (index: number, row: User) => {};
+const handleReset = (index: number, row: User) => {
+  resetPassword({
+    username: row.username
+  });
+};
 let tableData = ref<User[]>([]);
 
 onBeforeMount(() => {
+  getUserList().then((res: any) => {
+    tableData.value = res.data;
+  });
   tableData.value = [
     {
       id: 1,

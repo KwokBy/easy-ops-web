@@ -21,6 +21,22 @@ export const refreshToken = (data: object) => {
   return http.request("post", "/refreshToken", { data });
 };
 
-// export const searchVague = (data: object) => {
-//   return http.request("post", "/searchVague", { data });
-// };
+// 获取用户列表
+export const getUserList = () => {
+  return http.request("post", "/api/v1/user/get");
+};
+
+// 重置密码
+export const resetPassword = (data: object) => {
+  return http.request("post", "/api/v1/user/resetPassword", { data });
+};
+
+// 删除用户
+export const deleteUser = (data: object) => {
+  return http.request("post", "/api/v1/user/delete", { data });
+};
+
+// 添加用户
+export const addUser = (data: object) => {
+  return http.request("post", "/api/v1/user/add", { data });
+};
